@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.starstudio.frame.base">
+
+    <application>
+        <activity
+            android:name="com.starstudio.frame.base.permission.AppSettingsDialogHolderActivity"
+            android:exported="false"
+            android:label=""
+            android:theme="@style/EasyPermissions.Transparent"/>
+    </application>
+
+</manifest>

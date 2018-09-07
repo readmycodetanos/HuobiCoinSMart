@@ -1,0 +1,4 @@
+<resources>
+    <string name="rationale_ask_again">이 앱은 요청한 권한없이 제대로 작동하지 않을 수 있습니다. 앱 설정 화면을 열어 앱 권한을 수정하십시오.</string>
+    <string name="title_settings_dialog">필요한 사용 권한</string>
+</resources>
