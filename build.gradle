@@ -29,6 +29,8 @@ buildscript {
 
         //http://greenrobot.org/greendao/documentation/how-to-get-started/
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
+        //http://greenrobot.org/greendao/documentation/how-to-get-started/
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2' // add plugin
     }
 }
 

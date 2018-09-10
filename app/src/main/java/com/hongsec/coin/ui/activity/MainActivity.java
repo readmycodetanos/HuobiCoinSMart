@@ -1,7 +1,9 @@
-package com.hongsec.coin;
+package com.hongsec.coin.ui.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.hongsec.coin.R;
 
 public class MainActivity extends AppCompatActivity {
 
