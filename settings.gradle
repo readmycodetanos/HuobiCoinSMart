@@ -1,1 +1,1 @@
-include ':app','okgo_extends','lib_base'
+include ':app', ':upbittrade','okgo_extends','lib_base'

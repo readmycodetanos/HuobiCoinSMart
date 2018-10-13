@@ -2,6 +2,7 @@ package com.hongsec.coin.mvp.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class TradeData {
@@ -31,6 +32,20 @@ public class TradeData {
     private double id;
     private double price;
     private String direction;
+
+    @Generated(hash = 49765175)
+    public TradeData(int amount, long ts, double id, double price,
+            String direction) {
+        this.amount = amount;
+        this.ts = ts;
+        this.id = id;
+        this.price = price;
+        this.direction = direction;
+    }
+
+    @Generated(hash = 1998945192)
+    public TradeData() {
+    }
 
     public int getAmount() {
         return amount;
