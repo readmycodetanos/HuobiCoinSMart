@@ -22,6 +22,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
+    flavorDimensions "default"
+
+    productFlavors {
+        real {
+            manifestPlaceholders = [mFlavor: "realease"]
+
+        }
+
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "upbittrade_${variant.productFlavors[0].name}_${getDate()}_v${variant.versionName}_c${variant.versionCode}.apk"
+        }
+    }
+
+
+}
+
+def getDate(){
+    return new Date().format("MMddHH");
 }
 
 dependencies {
