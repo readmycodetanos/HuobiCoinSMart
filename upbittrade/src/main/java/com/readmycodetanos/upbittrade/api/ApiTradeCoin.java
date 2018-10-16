@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.readmycodetanos.upbittrade.api.data.UpbitData;
 import com.readmycodetanos.upbittrade.base.BaseJsonApiAbstract;
+import com.starstudio.frame.base.util.UtilsLog;
 import com.starstudio.frame.net.extend.imp.OnJsonArrayCallBack;
 import com.starstudio.frame.net.model.HttpMethod;
 import com.starstudio.frame.net.request.GetRequest;
@@ -61,18 +62,20 @@ public class ApiTradeCoin extends BaseJsonApiAbstract<ApiTradeCoin, GetRequest> 
 
             @Override
             public UpbitData getItem(int position, Object itemjsonObject) {
-                UpbitData candleData = getGson().fromJson(itemjsonObject.toString(), UpbitData.class);
+                UpbitData candleData =getGson().fromJson(itemjsonObject.toString(),UpbitData.class);
                 return candleData;
             }
         }));
         Collections.reverse(candleDatas);
-        for (int i = 0; i < candleDatas.size(); i++) {
-            UpbitData candleData = candleDatas.get(i);
-            if (candleDatas_remake.size() >= 19) {
-                candleData.setSma_pt((getSumTypical() + candleData.getTypicalPrice()) / 20);
-                candleData.setMean_diviation((getSumDeviation(candleData.getSma_pt()) + Math.abs(candleData.getSma_pt() - candleData.getTypicalPrice())) / 20);
-                candleData.setCciValue((candleData.getTypicalPrice() - candleData.getSma_pt()) / (0.015 * candleData.getMean_diviation()));
-                //                UtilsLog.getInstance().v("time:"+candleData.getCandleDateTimeKst()+"price:"+candleData.getTradePrice()+"   cci:"+candleData.getCciValue());
+
+
+        for(int i=0;i<candleDatas.size();i++){
+            UpbitData candleData =candleDatas.get(i);
+            if(candleDatas_remake.size()>=19){
+                candleData.setSma_pt((getSumTypical()+candleData.getTypicalPrice())/20);
+                candleData.setMean_diviation((getSumDeviation(candleData.getSma_pt())+Math.abs(candleData.getSma_pt()-candleData.getTypicalPrice()))/20);
+                candleData.setCciValue((candleData.getTypicalPrice()-candleData.getSma_pt())/(0.015*candleData.getMean_diviation()));
+              UtilsLog.getInstance().v("hongsegi:"+code+minute+":"+candleData.getCandleDateTimeKst()+"price:"+candleData.getTradePrice()+"   cci:"+candleData.getCciValue());
             }
             candleDatas_remake.add(candleData);
         }

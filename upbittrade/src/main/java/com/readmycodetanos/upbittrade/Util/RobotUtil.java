@@ -87,11 +87,11 @@ public class RobotUtil {
 
         switch (code) {
             case 240:
-                if (is240) {
+//                if (is240) {
                     last240 = getLastString(hour, 0);
 //                   last240 =   getLastString(hour, minute / 5);
-                    ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE240);
-                    apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
+                    ApiTradeCoin apiTradeCoin24 = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE240);
+                    apiTradeCoin24.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
                         public void onResponse(ApiTradeCoin apiTradeCoin) {
 
@@ -105,17 +105,17 @@ public class RobotUtil {
                             loopCall(coinListData, 60);
                         }
                     });
-                } else {
-                    loopCall(coinListData, 60);
-                }
+//                } else {
+//                    loopCall(coinListData, 60);
+//                }
 
                 break;
             case 60:
-                if (is60) {
+//                if (is60) {
                     last60 = getLastString(hour, minute / 60);
 //                    last60 = getLastString(hour, minute / 5);;
-                    ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE60);
-                    apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
+                    ApiTradeCoin apiTradeCoin60 = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE60);
+                    apiTradeCoin60.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
                         public void onResponse(ApiTradeCoin apiTradeCoin) {
                             CoinAnalyzeBean coinAnalyzeBean = coinAnalyzeBeans.get(coinListData.getMarket());
@@ -128,16 +128,16 @@ public class RobotUtil {
                             loopCall(coinListData, 30);
                         }
                     });
-                } else {
-                    loopCall(coinListData, 30);
-                }
+//                } else {
+//                    loopCall(coinListData, 30);
+//                }
                 break;
             case 30:
-                if (is30) {
+//                if (is30) {
 //                    last30 =getLastString(hour, minute / 5);;
                     last30 = getLastString(hour, minute / 30);
-                    ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE30);
-                    apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
+                    ApiTradeCoin apiTradeCoin30 = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE30);
+                    apiTradeCoin30.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
                         public void onResponse(ApiTradeCoin apiTradeCoin) {
                             CoinAnalyzeBean coinAnalyzeBean = coinAnalyzeBeans.get(coinListData.getMarket());
@@ -149,16 +149,16 @@ public class RobotUtil {
                             loopCall(coinListData, 15);
                         }
                     });
-                } else {
-                    loopCall(coinListData, 15);
-                }
+//                } else {
+//                    loopCall(coinListData, 15);
+//                }
                 break;
             case 15:
-                if (is15) {
+//                if (is15) {
 //                    last15  =getLastString(hour, minute / 5);
                     last15 = getLastString(hour, minute / 15);
-                    ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE15);
-                    apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
+                    ApiTradeCoin apiTradeCoin15 = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE15);
+                    apiTradeCoin15.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
                         public void onResponse(ApiTradeCoin apiTradeCoin) {
                             CoinAnalyzeBean coinAnalyzeBean = coinAnalyzeBeans.get(coinListData.getMarket());
@@ -170,17 +170,17 @@ public class RobotUtil {
                             loopCall(coinListData, 10);
                         }
                     });
-                } else {
-                    loopCall(coinListData, 10);
-                }
+//                } else {
+//                    loopCall(coinListData, 10);
+//                }
                 break;
             case 10:
-                if (is10) {
+//                if (is10) {
 //                    last10 = getLastString(hour, minute / 5);
                     last10 = getLastString(hour, minute / 10);
 
-                    ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE10);
-                    apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
+                    ApiTradeCoin apiTradeCoin5 = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE10);
+                    apiTradeCoin5.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
                         public void onResponse(ApiTradeCoin apiTradeCoin) {
                             CoinAnalyzeBean coinAnalyzeBean = coinAnalyzeBeans.get(coinListData.getMarket());
@@ -193,12 +193,12 @@ public class RobotUtil {
                             loopCall(coinListData, 5);
                         }
                     });
-                } else {
-                    loopCall(coinListData, 5);
-                }
+//                } else {
+//                    loopCall(coinListData, 5);
+//                }
                 break;
             case 5:
-                if (is5) {
+//                if (is5) {
                     last5 = getLastString(hour, minute / 5);
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE5);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
@@ -215,7 +215,7 @@ public class RobotUtil {
 
                         }
                     });
-                }
+//                }
 
 
                 break;
