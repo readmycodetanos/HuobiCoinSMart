@@ -1,5 +1,7 @@
 package com.readmycodetanos.upbittrade.Util;
 
+import android.text.TextUtils;
+
 import com.readmycodetanos.upbittrade.activity.MainActivity;
 import com.readmycodetanos.upbittrade.api.data.CoinListData;
 import com.readmycodetanos.upbittrade.api.data.UpbitData;
@@ -20,7 +22,7 @@ import java.util.Set;
 public class TradeDataAnalyzer {
 
 
-    public void analyyzeCCI(MainActivity context, Map<String, CoinAnalyzeBean> coinAnalyzeBeans) {
+    public void analyyzeCCI(MainActivity context, Map<String, CoinAnalyzeBean> coinAnalyzeBeans, boolean is5, boolean is10, boolean is15, boolean is30, boolean is60, boolean is240) {
 
         Set<String> strings = coinAnalyzeBeans.keySet();
         Iterator<String> iterator = strings.iterator();
@@ -33,6 +35,14 @@ public class TradeDataAnalyzer {
 
         StringBuilder needSell = new StringBuilder();
         needSell.append("매도 추천 코인:\n");
+
+        boolean needAlarm = false;
+
+        StringBuilder suddenlyUp = new StringBuilder();
+        StringBuilder suddenlyDown = new StringBuilder();
+        suddenlyUp.append("폭등 알림:\n");
+        suddenlyDown.append("폭락 알림:\n");
+
 
         while (iterator.hasNext()) {
             String next = iterator.next();
@@ -64,18 +74,19 @@ public class TradeDataAnalyzer {
             /**
              * (1)너무 잦은 알림 제한으로 30,60,120분만 알립니다.
              */
-            boolean down_case1 = direction240 == TradeDirection.DOWN_FROM_NORMAL || direction60 == TradeDirection.DOWN_FROM_NORMAL || direction30 == TradeDirection.DOWN_FROM_NORMAL;
+            boolean down_case1 = (is240 && direction240 == TradeDirection.DOWN_FROM_NORMAL) || (is60 && direction60 == TradeDirection.DOWN_FROM_NORMAL) || (is30 && direction30 == TradeDirection.DOWN_FROM_NORMAL);
             if (down_case1) {
+                needAlarm = true;
                 downMessage.append("[" + coinListData.getKorean_name() + "]:"); //coin name
-                if (direction240 == TradeDirection.DOWN_FROM_NORMAL) {
+                if (is240 && direction240 == TradeDirection.DOWN_FROM_NORMAL) {
                     downMessage.append(getDataString(tradeRecord240.getUpbitData(), tradeRecord240.getLastUpbitData(), "240분"));
                     downMessage.append("\n");
                 }
-                if (direction60 == TradeDirection.DOWN_FROM_NORMAL) {
+                if (is60 && direction60 == TradeDirection.DOWN_FROM_NORMAL) {
                     downMessage.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "60분"));
                     downMessage.append("\n");
                 }
-                if (direction30 == TradeDirection.DOWN_FROM_NORMAL) {
+                if (is30 && direction30 == TradeDirection.DOWN_FROM_NORMAL) {
                     downMessage.append(getDataString(tradeRecord30.getUpbitData(), tradeRecord30.getLastUpbitData(), "30분"));
                     downMessage.append("\n");
                 }
@@ -89,23 +100,24 @@ public class TradeDataAnalyzer {
              * (1)안전로직으로 30분 UP_FRON_DOWN 일떄 알립니다.
              * (2)장기가 하락중이면서 10,15분봉이 UP_FROM_DOWN일때 아립니다.
              */
-            boolean case1 = direction30 == TradeDirection.UP_FROM_DOWN;
-            boolean case2 = ((direction240 == TradeDirection.DOWNING || direction60 == TradeDirection.DOWNING || direction30 == TradeDirection.DOWNING) && (direction15 == TradeDirection.UP_FROM_DOWN || direction10 == TradeDirection.UP_FROM_DOWN));
+            boolean case1 = is30 && direction30 == TradeDirection.UP_FROM_DOWN;
+            boolean case2 = ((direction240 == TradeDirection.DOWNING) || direction60 == TradeDirection.DOWNING || direction30 == TradeDirection.DOWNING) && ((is15 && direction15 == TradeDirection.UP_FROM_DOWN) || (is10 && direction10 == TradeDirection.UP_FROM_DOWN));
             if (case1 || case2) {
+                needAlarm = true;
                 needBuy.append("[" + coinListData.getKorean_name() + "]:"); //coin name
 
 
-                if (direction30 == TradeDirection.UP_FROM_DOWN) {
+                if (is30 && direction30 == TradeDirection.UP_FROM_DOWN) {
                     needBuy.append("[반나절 과매도 종료로 매수추천]");
                     needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "30분"));
                     needBuy.append("\n");
                 }
                 if (case2) {
                     needBuy.append("[단기 과매도 종료로 매수추천]");
-                    if (direction15 == TradeDirection.UP_FROM_DOWN) {
+                    if (is15 && direction15 == TradeDirection.UP_FROM_DOWN) {
                         needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "15분"));
                     }
-                    if (direction10 == TradeDirection.UP_FROM_DOWN) {
+                    if (is10 && direction10 == TradeDirection.UP_FROM_DOWN) {
                         needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "10분"));
                     }
                     needBuy.append("\n");
@@ -119,29 +131,30 @@ public class TradeDataAnalyzer {
              * 로직:
              * (1) 10,15,30,60,240 이 DOWN_FROM_UP일떄 매도 추천합니다.
              */
-            boolean sell_case1 = direction240 == TradeDirection.DOWN_FROM_UP || direction60 == TradeDirection.DOWN_FROM_UP || direction30 == TradeDirection.DOWN_FROM_UP || direction15 == TradeDirection.DOWN_FROM_UP || direction10 == TradeDirection.DOWN_FROM_UP;
+            boolean sell_case1 = (is240 && direction240 == TradeDirection.DOWN_FROM_UP) || (is60 && direction60 == TradeDirection.DOWN_FROM_UP) || (is30 && direction30 == TradeDirection.DOWN_FROM_UP) || (is15 && direction15 == TradeDirection.DOWN_FROM_UP) || (is10 && direction10 == TradeDirection.DOWN_FROM_UP);
             if (sell_case1) {
+                needAlarm = true;
                 needBuy.append("[" + coinListData.getKorean_name() + "]:"); //coin name
-                if (direction240 == TradeDirection.DOWN_FROM_UP || direction60 == TradeDirection.DOWN_FROM_UP || direction30 == TradeDirection.DOWN_FROM_UP) {
+                if ((is240 && direction240 == TradeDirection.DOWN_FROM_UP) || (is60 && direction60 == TradeDirection.DOWN_FROM_UP) || (is30 && direction30 == TradeDirection.DOWN_FROM_UP)) {
                     needBuy.append("[장기적 과매수 종료로 매도추천]");
-                    if (direction240 == TradeDirection.DOWN_FROM_UP) {
-                        needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "240분"));
+                    if (is240 && direction240 == TradeDirection.DOWN_FROM_UP) {
+                        needBuy.append(getDataString(tradeRecord240.getUpbitData(), tradeRecord240.getLastUpbitData(), "240분"));
                     }
-                    if (direction60 == TradeDirection.DOWN_FROM_UP) {
+                    if (is60 && direction60 == TradeDirection.DOWN_FROM_UP) {
                         needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "60분"));
                     }
-                    if (direction30 == TradeDirection.DOWN_FROM_UP) {
-                        needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "30분"));
+                    if (is30 && direction30 == TradeDirection.DOWN_FROM_UP) {
+                        needBuy.append(getDataString(tradeRecord30.getUpbitData(), tradeRecord30.getLastUpbitData(), "30분"));
                     }
 
                     needBuy.append("\n");
                 }
-                if ( direction15 == TradeDirection.DOWN_FROM_UP || direction10 == TradeDirection.DOWN_FROM_UP) {
+                if ((is15 && direction15 == TradeDirection.DOWN_FROM_UP) || (is10 && direction10 == TradeDirection.DOWN_FROM_UP)) {
                     needBuy.append("[단기적 과매수 종료로 매도추천]");
-                    if (direction15 == TradeDirection.DOWN_FROM_UP) {
+                    if (is15 && direction15 == TradeDirection.DOWN_FROM_UP) {
                         needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "15분"));
                     }
-                    if (direction10 == TradeDirection.DOWN_FROM_UP) {
+                    if (is10 && direction10 == TradeDirection.DOWN_FROM_UP) {
                         needBuy.append(getDataString(tradeRecord60.getUpbitData(), tradeRecord60.getLastUpbitData(), "10분"));
                     }
                     needBuy.append("\n");
@@ -150,23 +163,57 @@ public class TradeDataAnalyzer {
                 needBuy.append("\n");
             }
 
-        }
+            //폭등 폭락 알림.
+            /**
+             * 5분봉   2%
+             * 10,15분봉이 5% 의 변동반응을 보이면  폭등폭락 조건을 만족합니다.
+             */
+            if (is5) {
+                double v1 = tradeRecord5.getUpbitData().getTradePrice() - tradeRecord5.getLastUpbitData().getTradePrice();
+                double v = Math.round(v1 * 1000 / tradeRecord5.getLastUpbitData().getTradePrice()) / 10.0;
+                if (v >= 2 || v <= -2) {
+                    needAlarm = true;
+                    if (v >= 2) {
+                        //폭등
+                        suddenlyUp.append("[" + coinListData.getKorean_name() + "]:"); //coin name
+                        suddenlyUp.append(v + "%");
+                        suddenlyUp.append("\n");
+                    }
 
-        context.showMessage(downMessage,needBuy,needSell);
+                    if (v <= -2) {
+                        //폭락
+                        suddenlyDown.append("[" + coinListData.getKorean_name() + "]:"); //coin name
+                        suddenlyDown.append(v + "%");
+                        suddenlyDown.append("\n");
+                    }
+                }
+
+            }
+
+
+        }
+        if (needAlarm) {
+            context.showMessage(downMessage, needBuy, needSell, suddenlyUp, suddenlyDown);
+        } else {
+            context.showHeart();
+        }
 
     }
 
     private String getDataString(UpbitData curData, UpbitData lastData, String minute) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[" + minute + "]");
-        stringBuilder.append("[" + lastData.getCciValue() + "->" + curData.getCciValue() + "]");//cci change
-        stringBuilder.append("[" + (Math.round((curData.getTradePrice() - lastData.getTradePrice()) / lastData.getTradePrice()) * 100) / 100.0 + "%]"); //percentage
+        stringBuilder.append("[" + Math.round(lastData.getCciValue()*10)/10.0 + "->" +  Math.round(curData.getCciValue()*10)/10.0 + "]");//cci change
+        stringBuilder.append("[" + (Math.round((curData.getTradePrice() - lastData.getTradePrice()) / lastData.getTradePrice() * 1000)) / 10.0 + "%]"); //percentage
         stringBuilder.append("[" + lastData.getTradePrice() + "->" + curData.getTradePrice() + "]");// price change
         return stringBuilder.toString();
     }
 
 
     private TradeDirection getDirection(UpbitData curData, UpbitData lastData) {
+        if (TextUtils.isEmpty(curData.getCode())) {
+            return TradeDirection.NORMAL;
+        }
 
         if (Math.abs(curData.getCciValue()) < 100 && Math.abs(lastData.getCciValue()) < 100) {
             return TradeDirection.NORMAL;// all ways in  ---
@@ -193,6 +240,7 @@ public class TradeDataAnalyzer {
 
         return TradeDirection.NORMAL;
     }
+
 
 
 }

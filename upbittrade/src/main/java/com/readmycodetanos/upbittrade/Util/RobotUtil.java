@@ -30,6 +30,8 @@ public class RobotUtil {
     private String last15;
     private String last10;
     private String last5;
+    private int hour;
+    private int minute;
 
     public RobotUtil(MainActivity context) {
         this.context = context;
@@ -45,22 +47,26 @@ public class RobotUtil {
     /**
      * Need check per by second
      */
-    public void check() {
-        if (isLooping) {
-            return;
-        }
+    public void trade() {
         Calendar instance = Calendar.getInstance();
         instance.setTimeInMillis(System.currentTimeMillis());
-        int hour = instance.getMinimum(Calendar.HOUR_OF_DAY);
-        int minimum = instance.getMinimum(Calendar.MINUTE);
-        int second = instance.getMinimum(Calendar.SECOND);
+        hour = instance.get(Calendar.HOUR_OF_DAY);
+        minute = instance.get(Calendar.MINUTE);
+        int second = instance.get(Calendar.SECOND);
         //240  , 60 , 30 , 15, 10 , 5
-        is240 = hour % 4 == 0 && !getLastString(hour, minimum).equalsIgnoreCase(last240);
-        is60 = minimum == 0 && !getLastString(hour, minimum).equalsIgnoreCase(last60);
-        is30 = minimum % 30 == 0 && !getLastString(hour, minimum).equalsIgnoreCase(last30);
-        is15 = minimum % 15 == 0 && !getLastString(hour, minimum).equalsIgnoreCase(last15);
-        is10 = minimum % 10 == 0 && !getLastString(hour, minimum).equalsIgnoreCase(last10);
-        is5 = minimum % 5 == 0 && !getLastString(hour, minimum).equalsIgnoreCase(last5);
+        is240 = hour % 4 == 0 && !getLastString(hour, 0).equalsIgnoreCase(last240);
+        is60 = minute == 0 && !getLastString(hour, minute/60).equalsIgnoreCase(last60);
+        is30 = minute % 30 == 0 && !getLastString(hour, minute/30).equalsIgnoreCase(last30);
+        is15 = minute % 15 == 0 && !getLastString(hour, minute/15).equalsIgnoreCase(last15);
+        is10 = minute % 10 == 0 && !getLastString(hour, minute/10).equalsIgnoreCase(last10);
+        is5 = minute % 5 == 0 && !getLastString(hour, minute/5).equalsIgnoreCase(last5);
+//        is240 = !getLastString(hour, minute / 5).equalsIgnoreCase(last240);
+//        is60 = !getLastString(hour, minute / 5).equalsIgnoreCase(last60);
+//        is30 = !getLastString(hour, minute / 5).equalsIgnoreCase(last30);
+//        is15 = !getLastString(hour, minute / 5).equalsIgnoreCase(last15);
+//        is10 = !getLastString(hour, minute / 5).equalsIgnoreCase(last10);
+//        is5 = !getLastString(hour, minute / 5).equalsIgnoreCase(last5);
+
         for (CoinListData coinListData : coinListDataList) {
             loopCall(coinListData, 240);
         }
@@ -82,6 +88,8 @@ public class RobotUtil {
         switch (code) {
             case 240:
                 if (is240) {
+                    last240 = getLastString(hour, 0);
+//                   last240 =   getLastString(hour, minute / 5);
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE240);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
@@ -104,6 +112,8 @@ public class RobotUtil {
                 break;
             case 60:
                 if (is60) {
+                    last60 = getLastString(hour, minute / 60);
+//                    last60 = getLastString(hour, minute / 5);;
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE60);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
@@ -124,6 +134,8 @@ public class RobotUtil {
                 break;
             case 30:
                 if (is30) {
+//                    last30 =getLastString(hour, minute / 5);;
+                    last30 = getLastString(hour, minute / 30);
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE30);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
@@ -143,6 +155,8 @@ public class RobotUtil {
                 break;
             case 15:
                 if (is15) {
+//                    last15  =getLastString(hour, minute / 5);
+                    last15 = getLastString(hour, minute / 15);
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE15);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
@@ -162,6 +176,9 @@ public class RobotUtil {
                 break;
             case 10:
                 if (is10) {
+//                    last10 = getLastString(hour, minute / 5);
+                    last10 = getLastString(hour, minute / 10);
+
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE10);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
@@ -182,6 +199,7 @@ public class RobotUtil {
                 break;
             case 5:
                 if (is5) {
+                    last5 = getLastString(hour, minute / 5);
                     ApiTradeCoin apiTradeCoin = new ApiTradeCoin(context, coinListData.getMarket(), ApiTradeCoin.MINUTE5);
                     apiTradeCoin.postRequest(context, new ImpApiCallBack<ApiTradeCoin>() {
                         @Override
@@ -193,14 +211,10 @@ public class RobotUtil {
                             coinAnalyzeBean.setTradeRecord5(tradeRecord);
                             coinAnalyzeBeans.put(coinListData.getMarket(), coinAnalyzeBean);
 
-                            new TradeDataAnalyzer().analyyzeCCI(context,coinAnalyzeBeans);
+
 
                         }
                     });
-                } else {
-
-
-
                 }
 
 
@@ -232,4 +246,7 @@ public class RobotUtil {
 
     }
 
+    public void check() {
+        new TradeDataAnalyzer().analyyzeCCI(context, coinAnalyzeBeans, is5, is10, is15, is30, is60, is240);
+    }
 }

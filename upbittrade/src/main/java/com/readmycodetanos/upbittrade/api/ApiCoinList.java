@@ -42,10 +42,27 @@ public class ApiCoinList extends BaseJsonApiAbstract<ApiCoinList,GetRequest> {
             }
         }));
         for(CoinListData coinListData :coinListDataList_temp){
-            if(coinListData.getMarket().startsWith("KRW")){
+            if(coinListData.getMarket().startsWith("KRW-XRP")){
+                coinListDataList.add(coinListData);
+            }
+            if(coinListData.getMarket().startsWith("KRW-ADA")){
+                coinListDataList.add(coinListData);
+            }
+            if(coinListData.getMarket().startsWith("KRW-TRON")){
+                coinListDataList.add(coinListData);
+            }
+            if(coinListData.getMarket().startsWith("KRW-ETH")){
+                coinListDataList.add(coinListData);
+            }
+            if(coinListData.getMarket().startsWith("KRW-STORJ")){
+                coinListDataList.add(coinListData);
+            }
+            if(coinListData.getMarket().startsWith("KRW-ETH")){
                 coinListDataList.add(coinListData);
             }
         }
+//        coinListDataList.add(coinListDataList_temp.get(0));
+//        coinListDataList.add(coinListDataList_temp.get(2));
     }
 
     @Override

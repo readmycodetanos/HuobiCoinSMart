@@ -10,8 +10,8 @@ import com.readmycodetanos.upbittrade.api.data.UpbitData;
  */
 public class TradeRecord {
 
-    private UpbitData upbitData;
-    private UpbitData lastUpbitData;
+    private UpbitData upbitData = new UpbitData();
+    private UpbitData lastUpbitData = new UpbitData();
 
     public UpbitData getUpbitData() {
         return upbitData;
